@@ -23,7 +23,7 @@ Or install it yourself as:
 
 ## Usage
 
-    bank = Money::Bank::RussianCentralBank
+    bank = Money::Bank::RussianCentralBank.new
 
     # Load rates
     bank.update_rates
