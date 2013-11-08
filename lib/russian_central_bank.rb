@@ -47,10 +47,13 @@ class Money
       end
 
       def update_parsed_rates rates
+        local_currencies = Money::Currency.table.map { |currency| currency.last[:iso_code] }
         add_rate('RUB', 'RUB', 1)
         rates.each do |rate|
           begin
-            add_rate('RUB', rate[:vch_code], 1/ (rate[:vcurs].to_f / rate[:vnom].to_i))
+            if local_currencies.include? rate[:vch_code]
+              add_rate('RUB', rate[:vch_code], 1/ (rate[:vcurs].to_f / rate[:vnom].to_i))
+            end
           rescue Money::Currency::UnknownCurrency
           end
         end
