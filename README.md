@@ -25,8 +25,10 @@ Or install it yourself as:
 
     bank = Money::Bank::RussianCentralBank.new
 
-    # Load rates
+    # Load today's rates
     bank.update_rates
+    # Or you can specify the date
+    bank.update_rates(3.days.ago)
 
     Money.default_bank = bank
 
@@ -35,6 +37,9 @@ Or install it yourself as:
 
     # Check last rates update
     bank.rates_updated_at
+
+    # Check on which date rates were updated
+    bank.rates_updated_on
 
 ## Contributing
 
