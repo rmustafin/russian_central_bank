@@ -41,16 +41,19 @@ class Money
       end
 
       def exchange_rates(date)
-        client = Savon::Client.new(wsdl: CBR_SERVICE_URL)
+        client = Savon::Client.new(wsdl: CBR_SERVICE_URL, log: false, log_level: :error)
         response = client.call(:get_curs_on_date, message: { 'On_date' => date.strftime('%Y-%m-%dT%H:%M:%S') })
         response.body[:get_curs_on_date_response][:get_curs_on_date_result][:diffgram][:valute_data][:valute_curs_on_date]
       end
 
       def update_parsed_rates rates
+        local_currencies = Money::Currency.table.map { |currency| currency.last[:iso_code] }
         add_rate('RUB', 'RUB', 1)
         rates.each do |rate|
           begin
-            add_rate('RUB', rate[:vch_code], 1/ (rate[:vcurs].to_f / rate[:vnom].to_i))
+            if local_currencies.include? rate[:vch_code]
+              add_rate('RUB', rate[:vch_code], 1/ (rate[:vcurs].to_f / rate[:vnom].to_i))
+            end
           rescue Money::Currency::UnknownCurrency
           end
         end
