@@ -26,6 +26,7 @@ class Money
 
       def set_rate(from, to, rate)
         @rates[rate_key_for(from, to)] = rate
+        @rates[rate_key_for(to, from)] = 1.0 / rate
       end
 
       def get_rate from, to
