@@ -35,18 +35,34 @@ describe 'RussianCentralBank' do
   end
 
   describe '#get_rate' do
-    before do
-      @bank.flush_rates
-      @bank.add_rate('RUB', 'USD', 0.03)
-      @bank.add_rate('RUB', 'GBP', 0.02)
+    context 'getting dicrect rates' do
+      before do
+        @bank.flush_rates
+        @bank.add_rate('RUB', 'USD', 0.03)
+        @bank.add_rate('RUB', 'GBP', 0.02)
+      end
+
+      it 'should get rate from @rates' do
+        @bank.get_rate('RUB', 'USD').should == 0.03
+      end
+
+      it 'should calculate indirect rates' do
+        @bank.get_rate('USD', 'GBP').should == 0.6666666666666667
+      end
     end
 
-    it 'should get rate from @rates' do
-      @bank.get_rate('RUB', 'USD').should == 0.03
-    end
+    context 'getting indirect rate' do
+      let(:indirect_rate) { 4 }
 
-    it 'should calculate indirect rates' do
-      @bank.get_rate('USD', 'GBP').should == 0.6666666666666667
+      before do
+        @bank.flush_rates
+        @bank.add_rate('RUB', 'USD', 123)
+        @bank.add_rate('USD', 'RUB', indirect_rate)
+      end
+
+      it 'gets indirect rate from the last set' do
+        expect(@bank.get_rate('RUB', 'USD')).to eq(1.0 / indirect_rate)
+      end
     end
   end
 end
