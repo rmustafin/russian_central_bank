@@ -64,5 +64,45 @@ describe 'RussianCentralBank' do
         expect(@bank.get_rate('RUB', 'USD')).to eq(1.0 / indirect_rate)
       end
     end
+
+    context "when ttl is not set" do
+      before do
+        @bank.add_rate('RUB', 'USD', 123)
+        @bank.ttl = nil
+      end
+
+      it "should not update rates" do
+        @bank.should_not_receive(:update_rates)
+        @bank.get_rate('RUB', 'USD')
+      end
+    end
+
+    context "when ttl is set" do
+      before { @bank.add_rate('RUB', 'USD', 123) }
+
+      context "and raks are expired" do
+        before do
+          @bank.instance_variable_set('@rates_updated_at', Time.now - 3600)
+          @bank.ttl = 3600
+        end
+
+        it "should update rates" do
+          @bank.should_receive(:update_rates)
+          @bank.get_rate('RUB', 'USD')
+        end
+      end
+
+      context "and ranks are not expired" do
+        before do
+          @bank.instance_variable_set('@rates_updated_at', Time.now - 3000)
+          @bank.ttl = 3600
+        end
+
+        it "should not update rates" do
+          @bank.should_not_receive(:update_rates)
+          @bank.get_rate('RUB', 'USD')
+        end
+      end
+    end
   end
 end
