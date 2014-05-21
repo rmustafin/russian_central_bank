@@ -27,6 +27,7 @@ Or install it yourself as:
 
     # Load today's rates
     bank.update_rates
+
     # Or you can specify the date
     bank.update_rates(3.days.ago)
 
@@ -40,6 +41,11 @@ Or install it yourself as:
 
     # Check on which date rates were updated
     bank.rates_updated_on
+
+    # Use ttl attribute to enable rates autoupdate
+    bank.ttl = 1.day
+    # Check expiration date
+    bank.rates_expired_at
 
 ## Contributing
 

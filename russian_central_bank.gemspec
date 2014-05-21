@@ -4,7 +4,7 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
 Gem::Specification.new do |spec|
   spec.name          = 'russian_central_bank'
-  spec.version       = '0.2.1'
+  spec.version       = '0.3.0'
   spec.authors       = ['Ramil Mustafin']
   spec.email         = ['rommel.rmm@gmail.com']
   spec.description   = 'RussianCentralBank extends Money::Bank::VariableExchange and gives you access to the Central Bank of Russia currency exchange rates.'
