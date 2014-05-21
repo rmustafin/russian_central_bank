@@ -7,7 +7,7 @@ class Money
 
       CBR_SERVICE_URL = 'http://www.cbr.ru/DailyInfoWebServ/DailyInfo.asmx?WSDL'
 
-      attr_reader :rates_updated_at, :rates_updated_on
+      attr_reader :rates_updated_at, :rates_updated_on, :ttl, :rates_expired_at
 
       def flush_rates
         @mutex.synchronize{
@@ -20,6 +20,7 @@ class Money
           update_parsed_rates exchange_rates(date)
           @rates_updated_at = Time.now
           @rates_updated_on = date
+          update_expired_at
           @rates
         }
       end
@@ -30,10 +31,29 @@ class Money
       end
 
       def get_rate from, to
+        update_rates if rates_expired?
         @rates[rate_key_for(from, to)] || indirect_rate(from, to)
       end
 
+      def ttl=(value)
+        @ttl = value
+        update_expired_at
+        @ttl
+      end
+
+      def rates_expired?
+        rates_expired_at && rates_expired_at <= Time.now
+      end
+
       private
+
+      def update_expired_at
+        @rates_expired_at = if ttl
+          @rates_updated_at ? @rates_updated_at + ttl : Time.now
+        else
+          nil
+        end
+      end
 
       def indirect_rate from, to
         from_base_rate = @rates[rate_key_for('RUB', from)]
