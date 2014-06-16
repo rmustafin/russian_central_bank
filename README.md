@@ -47,6 +47,26 @@ Or install it yourself as:
     # Check expiration date
     bank.rates_expired_at
 
+### Safe rates fetch
+
+There are some cases, when the `cbr.ru` returns HTTP 302.
+To avoid issues in production, you use fallback:
+
+```ruby
+bank = Money::Bank::RussianCentralBank.new
+begin
+  bank.update_rates
+rescue Money::Bank::RussianCentralBank::FetchError => e
+  Rails.logger.info "CBR failed: #{e.response}"
+
+  ## fallback
+  Money.default_bank = Money::Bank::VariableExchange.new
+
+  Money.default_bank.add_rate(:usd, :eur, 1.3)
+  Money.default_bank.add_rate(:eur, :usd, 0.7)
+end
+```
+
 ## Contributing
 
 1. Fork it
