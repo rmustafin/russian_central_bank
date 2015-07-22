@@ -3,7 +3,7 @@ require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 describe 'RussianCentralBank' do
   before do
     rates_hash = symbolize_keys YAML::load(File.open('spec/support/daily_rates.yml'))
-    Savon::Client.any_instance.stub_chain(:call, :body).and_return rates_hash
+    allow(Savon::Client).to receive_message_chain(:call, :body => rates_hash)
   end
 
   before :each do
