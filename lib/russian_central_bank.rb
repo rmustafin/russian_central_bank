@@ -10,29 +10,27 @@ class Money
       attr_reader :rates_updated_at, :rates_updated_on, :ttl, :rates_expired_at
 
       def flush_rates
-        @mutex.synchronize{
-          @rates = {}
-        }
+        @store = Money::RatesStore::Memory.new
       end
 
       def update_rates(date = Date.today)
-        @mutex.synchronize{
-          update_parsed_rates exchange_rates(date)
+        store.transaction do
+          update_parsed_rates(exchange_rates(date))
           @rates_updated_at = Time.now
           @rates_updated_on = date
           update_expired_at
-          @rates
-        }
+          store.send(:index)
+        end
       end
 
-      def set_rate(from, to, rate)
-        @rates[rate_key_for(from, to)] = rate
-        @rates[rate_key_for(to, from)] = 1.0 / rate
+      def add_rate(from, to, rate)
+        super(from, to, rate)
+        super(to, from, 1.0 / rate)
       end
 
-      def get_rate from, to
+      def get_rate(from, to)
         update_rates if rates_expired?
-        @rates[rate_key_for(from, to)] || indirect_rate(from, to)
+        super || indirect_rate(from, to)
       end
 
       def ttl=(value)
@@ -55,19 +53,19 @@ class Money
         end
       end
 
-      def indirect_rate from, to
-        from_base_rate = @rates[rate_key_for('RUB', from)]
-        to_base_rate = @rates[rate_key_for('RUB', to)]
+      def indirect_rate(from, to)
+        from_base_rate = get_rate('RUB', from)
+        to_base_rate = get_rate('RUB', to)
         to_base_rate / from_base_rate
       end
 
-      def exchange_rates(date)
+      def exchange_rates(date = Date.today)
         client = Savon::Client.new(wsdl: CBR_SERVICE_URL, log: false, log_level: :error)
         response = client.call(:get_curs_on_date, message: { 'On_date' => date.strftime('%Y-%m-%dT%H:%M:%S') })
         response.body[:get_curs_on_date_response][:get_curs_on_date_result][:diffgram][:valute_data][:valute_curs_on_date]
       end
 
-      def update_parsed_rates rates
+      def update_parsed_rates(rates)
         local_currencies = Money::Currency.table.map { |currency| currency.last[:iso_code] }
         add_rate('RUB', 'RUB', 1)
         rates.each do |rate|

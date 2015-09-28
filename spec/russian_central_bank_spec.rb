@@ -3,7 +3,7 @@ require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 describe 'RussianCentralBank' do
   before do
     rates_hash = symbolize_keys YAML::load(File.open('spec/support/daily_rates.yml'))
-    Savon::Client.any_instance.stub_chain(:call, :body).and_return rates_hash
+    allow_any_instance_of(Savon::Client).to receive_message_chain(:call, :body) { rates_hash }
   end
 
   before :each do
@@ -16,9 +16,9 @@ describe 'RussianCentralBank' do
     end
 
     it 'should update rates from daily rates service' do
-      @bank.rates['RUB_TO_USD'].should == 0.03083678705348332
-      @bank.rates['RUB_TO_EUR'].should == 0.023478587528174305
-      @bank.rates['RUB_TO_JPY'].should == 3.086143524190736
+      expect(@bank.rates['RUB_TO_USD']).to eq(0.03083678705348332)
+      expect(@bank.rates['RUB_TO_EUR']).to eq(0.023478587528174305)
+      expect(@bank.rates['RUB_TO_JPY']).to eq(3.086143524190736)
     end
   end
 
@@ -30,7 +30,7 @@ describe 'RussianCentralBank' do
     it 'should delete all rates' do
       @bank.get_rate('RUB', 'USD')
       @bank.flush_rates
-      @bank.rates.should == {}
+      expect(@bank.store.send(:index)).to be_empty
     end
   end
 
@@ -43,11 +43,11 @@ describe 'RussianCentralBank' do
       end
 
       it 'should get rate from @rates' do
-        @bank.get_rate('RUB', 'USD').should == 0.03
+        expect(@bank.get_rate('RUB', 'USD')).to eq(0.03)
       end
 
       it 'should calculate indirect rates' do
-        @bank.get_rate('USD', 'GBP').should == 0.6666666666666667
+        expect(@bank.get_rate('USD', 'GBP')).to eq(0.6666666666666667)
       end
     end
 
@@ -72,7 +72,7 @@ describe 'RussianCentralBank' do
       end
 
       it "should not update rates" do
-        @bank.should_not_receive(:update_rates)
+        expect(@bank).to_not receive(:update_rates)
         @bank.get_rate('RUB', 'USD')
       end
     end
@@ -87,7 +87,7 @@ describe 'RussianCentralBank' do
         end
 
         it "should update rates" do
-          @bank.should_receive(:update_rates)
+          expect(@bank).to receive(:update_rates)
           @bank.get_rate('RUB', 'USD')
         end
       end
@@ -99,7 +99,7 @@ describe 'RussianCentralBank' do
         end
 
         it "should not update rates" do
-          @bank.should_not_receive(:update_rates)
+          expect(@bank).to_not receive(:update_rates)
           @bank.get_rate('RUB', 'USD')
         end
       end
