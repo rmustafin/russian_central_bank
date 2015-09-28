@@ -16,6 +16,8 @@ Or install it yourself as:
 
     $ gem install russian_central_bank
 
+NOTE: use 0.x version of `russian_central_bank` for > 6.0 `money` versions
+
 ##Dependencies
 
 * savon
@@ -23,18 +25,21 @@ Or install it yourself as:
 
 ## Usage
 
+    require 'russian_central_bank'
+
     bank = Money::Bank::RussianCentralBank.new
+
+    Money.default_bank = bank
 
     # Load today's rates
     bank.update_rates
 
-    # Or you can specify the date
-    bank.update_rates(3.days.ago)
-
-    Money.default_bank = bank
-
     # Exchange 100 USD to RUB
-    100.to_money('USD').exchange_to('RUB')
+    Money.new(1000, "USD").exchange_to('RUB')
+
+    # Specify rates date
+    bank.update_rates(Date.today - 3000)
+    Money.new(1000, "USD").exchange_to('RUB')  # makes you feel better
 
     # Check last rates update
     bank.rates_updated_at
@@ -44,6 +49,7 @@ Or install it yourself as:
 
     # Use ttl attribute to enable rates autoupdate
     bank.ttl = 1.day
+
     # Check expiration date
     bank.rates_expired_at
 
