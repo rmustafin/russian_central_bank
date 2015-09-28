@@ -3,7 +3,7 @@
 
 # RussianCentralBank
 
-This gem extends Money::Bank::VariableExchange with Money::Bank::RussianCentralBank and gives acceess to the Central Bank of Russia currency exchange.
+This gem extends [Money](https://github.com/RubyMoney/money)::Bank::VariableExchange with [Money](https://github.com/RubyMoney/money)::Bank::RussianCentralBank and gives access to the Central Bank of Russia currency exchange.
 
 ## Installation
 
@@ -23,8 +23,8 @@ NOTE: use 0.x version of `russian_central_bank` for > 6.0 `money` versions
 
 ##Dependencies
 
-* savon
-* money
+* [savon](http://savonrb.com/)
+* [money](https://github.com/RubyMoney/money)
 
 ## Usage
 
