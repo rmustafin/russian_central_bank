@@ -1,3 +1,6 @@
+[![Build Status](https://circleci.com/gh/rmustafin/russian_central_bank.svg?style=shield)](https://circleci.com/gh/rmustafin/russian_central_bank)
+[![License](https://img.shields.io/github/license/rmustafin/russian_central_bank.svg)](http://opensource.org/licenses/MIT)
+
 # RussianCentralBank
 
 This gem extends Money::Bank::VariableExchange with Money::Bank::RussianCentralBank and gives acceess to the Central Bank of Russia currency exchange.
@@ -25,6 +28,8 @@ NOTE: use 0.x version of `russian_central_bank` for > 6.0 `money` versions
 
 ## Usage
 
+Regular usage
+
     require 'russian_central_bank'
 
     bank = Money::Bank::RussianCentralBank.new
@@ -37,6 +42,8 @@ NOTE: use 0.x version of `russian_central_bank` for > 6.0 `money` versions
     # Exchange 100 USD to RUB
     Money.new(1000, "USD").exchange_to('RUB')
 
+Specific date rates
+
     # Specify rates date
     bank.update_rates(Date.today - 3000)
     Money.new(1000, "USD").exchange_to('RUB')  # makes you feel better
@@ -46,6 +53,8 @@ NOTE: use 0.x version of `russian_central_bank` for > 6.0 `money` versions
 
     # Check on which date rates were updated
     bank.rates_updated_on
+
+Autoupdate
 
     # Use ttl attribute to enable rates autoupdate
     bank.ttl = 1.day
