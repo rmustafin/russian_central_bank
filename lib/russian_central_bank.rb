@@ -4,6 +4,14 @@ require 'savon'
 class Money
   module Bank
     class RussianCentralBank < Money::Bank::VariableExchange
+      class FetchError < StandardError
+        attr_reader :response
+
+        def initialize(message, response=nil)
+          super(message)
+          @response = response
+        end
+      end
 
       CBR_SERVICE_URL = 'http://www.cbr.ru/DailyInfoWebServ/DailyInfo.asmx?WSDL'
 
@@ -64,6 +72,8 @@ class Money
           follow_redirects: true
         response = client.call(:get_curs_on_date, message: { 'On_date' => date.strftime('%Y-%m-%dT%H:%M:%S') })
         response.body[:get_curs_on_date_response][:get_curs_on_date_result][:diffgram][:valute_data][:valute_curs_on_date]
+      rescue Wasabi::Resolver::HTTPError => e
+        raise FetchError.new(e.message, e.response)
       end
 
       def update_parsed_rates(rates)
