@@ -1,0 +1,44 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/ruby:2.4.2
+        environment:
+          BUNDLE_JOBS: 3
+          BUNDLE_RETRY: 3
+          BUNDLE_PATH: vendor/bundle
+    steps:
+      - checkout
+
+      # Which version of bundler?
+      - run:
+          name: Which bundler?
+          command: bundle -v
+
+      # Restore bundle cache
+      - restore_cache:
+          keys:
+            - russian_central_bank-{{ checksum "russian_central_bank.gemspec" }}
+            - russian_central_bank
+
+      - run:
+          name: Bundle Install
+          command: bundle check || bundle install
+
+      # Store bundle cache
+      - save_cache:
+          key: russian_central_bank-{{ checksum "russian_central_bank.gemspec" }}
+          paths:
+            - vendor/bundle
+
+      # Run rspec
+      - run:
+          name: Run rspec
+          command: |
+            gem install rspec && \
+            bundle exec rspec --format progress \
+                              $(circleci tests glob "spec/**/*_spec.rb" | circleci tests split --split-by=timings)
+
+      # Save test results for timing analysis
+      - store_test_results:
+          path: test_results

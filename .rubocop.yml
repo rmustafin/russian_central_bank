@@ -1,0 +1,8 @@
+Metrics/BlockLength:
+  Enabled: true
+  Exclude:
+    - spec/**/*
+
+Metrics/LineLength:
+  Enabled: true
+  Max: 120

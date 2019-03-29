@@ -19,19 +19,20 @@ Or install it yourself as:
 
     $ gem install russian_central_bank
 
-NOTE: use 0.x version of `russian_central_bank` for > 6.0 `money` versions
+NOTE: use 0.x version of `russian_central_bank` for `money` versions < 6.0 
 
-##Dependencies
+## Dependencies
 
-* [savon](http://savonrb.com/)
+* [httparty](https://github.com/jnunemaker/httparty)
 * [money](https://github.com/RubyMoney/money)
 
 ## Usage
 
-Regular usage
+### Regular usage
 
     require 'russian_central_bank'
 
+    Money.locale_backend = :currency
     bank = Money::Bank::RussianCentralBank.new
 
     Money.default_bank = bank
@@ -39,14 +40,17 @@ Regular usage
     # Load today's rates
     bank.update_rates
 
-    # Exchange 100 USD to RUB
-    Money.new(1000, "USD").exchange_to('RUB')
+    # Exchange 1000 USD to RUB
+    Money.new(1000_00, "USD").exchange_to('RUB').format  # => 64.592,50 ₽
 
-Specific date rates
+    # Use indirect exchange rates, USD -> RUB -> EUR
+    Money.new(1000_00, "USD").exchange_to('EUR').format  # => €888,26
+
+### Specific date rates
 
     # Specify rates date
-    bank.update_rates(Date.today - 3000)
-    Money.new(1000, "USD").exchange_to('RUB')  # makes you feel better
+    bank.update_rates(Date.new(2010, 12, 31))
+    Money.new(1000_00, "USD").exchange_to('RUB').format  # => 30.476,90 ₽
 
     # Check last rates update
     bank.rates_updated_at
@@ -54,7 +58,7 @@ Specific date rates
     # Check on which date rates were updated
     bank.rates_updated_on
 
-Autoupdate
+### Autoupdate
 
     # Use ttl attribute to enable rates autoupdate
     bank.ttl = 1.day
@@ -64,14 +68,14 @@ Autoupdate
 
 ### Safe rates fetch
 
-There are some cases, when the `cbr.ru` returns HTTP 302.
+There are some cases, when the `cbr.ru` doesn't return HTTP 200.
 To avoid issues in production, you use fallback:
 
 ```ruby
 bank = Money::Bank::RussianCentralBank.new
 begin
   bank.update_rates
-rescue Money::Bank::RussianCentralBank::FetchError => e
+rescue Money::Bank::RussianCentralBankFetcher::FetchError => e
   Rails.logger.info "CBR failed: #{e.response}"
 
   ## fallback

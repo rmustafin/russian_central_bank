@@ -1,8 +1,0 @@
-get_curs_on_date_response:
-  get_curs_on_date_result:
-    diffgram:
-      valute_data:
-        valute_curs_on_date:
-          - {vname: "US Dollar", vnom: "1", vcurs: "32.4288", vcode: "840", vch_code: "USD"}
-          - {vname: "Euro", vnom: "1", vcurs: "42.5920", vcode: "978", vch_code: "EUR"}
-          - {vname: "Japanese yen", vnom: "100", vcurs: "32.4029", vcode: "392", vch_code: "JPY"}

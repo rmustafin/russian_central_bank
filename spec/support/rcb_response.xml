@@ -1,0 +1,53 @@
+
+<?xml version="1.0" encoding="windows-1251"?>
+<ValCurs Date="26.03.2019" name="Foreign Currency Market">
+	<Valute ID="R01010">
+		<NumCode>036</NumCode>
+		<CharCode>AUD</CharCode>
+		<Nominal>1</Nominal>
+		<Name>Австралийский доллар</Name>
+		<Value>45,7365</Value>
+	</Valute>
+	<Valute ID="R01035">
+		<NumCode>826</NumCode>
+		<CharCode>GBP</CharCode>
+		<Nominal>1</Nominal>
+		<Name>Фунт стерлингов Соединенного королевства</Name>
+		<Value>85,0552</Value>
+	</Valute>
+	<Valute ID="R01200">
+		<NumCode>344</NumCode>
+		<CharCode>HKD</CharCode>
+		<Nominal>10</Nominal>
+		<Name>Гонконгских долларов</Name>
+		<Value>82,1815</Value>
+	</Valute>
+	<Valute ID="R01215">
+		<NumCode>208</NumCode>
+		<CharCode>DKK</CharCode>
+		<Nominal>10</Nominal>
+		<Name>Датских крон</Name>
+		<Value>97,6581</Value>
+	</Valute>
+	<Valute ID="R01235">
+		<NumCode>840</NumCode>
+		<CharCode>USD</CharCode>
+		<Nominal>1</Nominal>
+		<Name>Доллар США</Name>
+		<Value>64,4993</Value>
+	</Valute>
+	<Valute ID="R01239">
+		<NumCode>978</NumCode>
+		<CharCode>EUR</CharCode>
+		<Nominal>1</Nominal>
+		<Name>Евро</Name>
+		<Value>72,9229</Value>
+	</Valute>
+	<Valute ID="R01820">
+		<NumCode>392</NumCode>
+		<CharCode>JPY</CharCode>
+		<Nominal>100</Nominal>
+		<Name>Японских иен</Name>
+		<Value>58,5958</Value>
+	</Valute>
+</ValCurs>
