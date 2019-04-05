@@ -3,7 +3,7 @@
 
 # RussianCentralBank
 
-This gem extends [Money](https://github.com/RubyMoney/money)::Bank::VariableExchange with [Money](https://github.com/RubyMoney/money)::Bank::RussianCentralBank and gives access to the Central Bank of Russia currency exchange.
+This gem provides access to the Central Bank of Russia currency exchange. It can be used as a standalone exchange rates parser and also extends [Money](https://github.com/RubyMoney/money)::Bank::VariableExchange with [Money](https://github.com/RubyMoney/money)::Bank::RussianCentralBank
 
 ## Installation
 
@@ -28,43 +28,63 @@ NOTE: use 0.x version of `russian_central_bank` for `money` versions < 6.0
 
 ## Usage
 
-### Regular usage
+### Standalone currency rates provider
 
-    require 'russian_central_bank'
+```ruby
+require 'russian_central_bank'
 
-    Money.locale_backend = :currency
-    bank = Money::Bank::RussianCentralBank.new
+# Today rates
+Money::Bank::RussianCentralBankFetcher.new.perform()
+# => [{:code=>"USD", :nominal=>1, :value=>65.1639}, ...]
 
-    Money.default_bank = bank
+# For any other date
+Money::Bank::RussianCentralBankFetcher.new.perform(Date.new(2010, 12, 31))
+# => [{:code=>"USD", :nominal=>1, :value=>30.4769}, ...]
+```
 
-    # Load today's rates
-    bank.update_rates
+### Regular usage (with money gem)
 
-    # Exchange 1000 USD to RUB
-    Money.new(1000_00, "USD").exchange_to('RUB').format  # => 64.592,50 ₽
+```ruby
+require 'russian_central_bank'
 
-    # Use indirect exchange rates, USD -> RUB -> EUR
-    Money.new(1000_00, "USD").exchange_to('EUR').format  # => €888,26
+Money.locale_backend = :currency
+bank = Money::Bank::RussianCentralBank.new
+
+Money.default_bank = bank
+
+# Load today's rates
+bank.update_rates
+
+# Exchange 1000 USD to RUB
+Money.new(1000_00, "USD").exchange_to('RUB').format  # => 64.592,50 ₽
+
+# Use indirect exchange rates, USD -> RUB -> EUR
+Money.new(1000_00, "USD").exchange_to('EUR').format  # => €888,26
+```
 
 ### Specific date rates
 
-    # Specify rates date
-    bank.update_rates(Date.new(2010, 12, 31))
-    Money.new(1000_00, "USD").exchange_to('RUB').format  # => 30.476,90 ₽
+```ruby
+# Specify rates date
+bank.update_rates(Date.new(2010, 12, 31))
+Money.new(1000_00, "USD").exchange_to('RUB').format  # => 30.476,90 ₽
 
-    # Check last rates update
-    bank.rates_updated_at
+# Check last rates update
+bank.rates_updated_at
 
-    # Check on which date rates were updated
-    bank.rates_updated_on
+# Check on which date rates were updated
+bank.rates_updated_on
+```
 
 ### Autoupdate
 
-    # Use ttl attribute to enable rates autoupdate
-    bank.ttl = 1.day
+```ruby
+# Use ttl attribute to enable rates autoupdate
+bank.ttl = 1.day
 
-    # Check expiration date
-    bank.rates_expired_at
+# Check expiration date
+bank.rates_expired_at
+```
 
 ### Safe rates fetch
 
