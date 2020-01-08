@@ -4,7 +4,7 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
 Gem::Specification.new do |spec|
   spec.name          = 'russian_central_bank'
-  spec.version       = '1.1.2'
+  spec.version       = '1.1.3'
   spec.authors       = ['Ramil Mustafin']
   spec.email         = ['rommel.rmm@gmail.com']
   spec.description   = 'RussianCentralBank extends Money::Bank::VariableExchange and gives you access to the Central Bank of Russia currency exchange rates.'
@@ -25,5 +25,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'webmock', '~>3'
 
   spec.add_dependency 'httparty', '>= 0.10.0'
-  spec.add_dependency 'money', '>= 6', '<= 6.13.4'
+  spec.add_dependency 'money', '>= 6.13.5'
 end
