@@ -34,7 +34,7 @@ describe Money::Bank::RussianCentralBank do
     it 'should delete all rates' do
       bank.get_rate('RUB', 'USD')
       bank.flush_rates
-      expect(bank.store.send(:index)).to be_empty
+      expect(bank.store.send(:rates)).to be_empty
     end
   end
 

@@ -15,7 +15,7 @@ class Money
           @rates_updated_at = Time.now
           @rates_updated_on = date
           update_expired_at
-          store.send(:index)
+          store.send(:rates)
         end
       end
 
